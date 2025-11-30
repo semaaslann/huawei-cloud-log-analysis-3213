@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  alert_visualization:
+    image: python:3.9-slim-buster
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./alert_visualization:/app
+    working_dir: /app
+    command: python -m http.server 8000
+    depends_on:
+      - mock_mrs
+    environment:
+      - MRS_ANOMALY_DATA_URL=http://mock_mrs:5000/anomalies
+
+  mock_mrs:
+    image: python:3.9-slim-buster
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mock_mrs:/app
+    working_dir: /app
+    command: python mock_mrs_api.py
+
+volumes:
+  alert_visualization:
